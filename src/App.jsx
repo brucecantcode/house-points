@@ -51,14 +51,14 @@ const styles = `
   }
   .hp-house-card:hover { transform: translateY(-3px); }
   .hp-house-accent { height: 6px; width: 100%; }
-  .hp-house-inner { padding: 3rem 3rem; display: flex; align-items: center; gap: 2.4rem; }
-  .hp-house-mascot { font-size: 7rem; line-height: 1; flex-shrink: 0; }
-  .hp-house-info { flex: 1; }
-  .hp-house-name { font-family: 'Bebas Neue', sans-serif; font-size: 3.8rem; letter-spacing: 0.1em; line-height: 1; }
-  .hp-house-sub { font-size: 0.9rem; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 6px; opacity: 0.4; }
-  .hp-house-pts-wrap { text-align: right; }
-  .hp-house-pts { font-family: 'Bebas Neue', sans-serif; font-size: 7rem; line-height: 1; }
-  .hp-house-pts-label { font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.4; margin-top: 6px; }
+  .hp-house-inner { padding: 2.2rem 2rem; display: flex; align-items: center; gap: 1.6rem; }
+  .hp-house-mascot { font-size: 5rem; line-height: 1; flex-shrink: 0; }
+  .hp-house-info { flex: 1; min-width: 0; }
+  .hp-house-name { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 0.08em; line-height: 1; }
+  .hp-house-sub { font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 6px; opacity: 0.4; }
+  .hp-house-pts-wrap { text-align: right; flex-shrink: 0; }
+  .hp-house-pts { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1; }
+  .hp-house-pts-label { font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; margin-top: 4px; }
   .hp-rank-badge {
     position: absolute; top: 16px; left: 20px;
     font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
