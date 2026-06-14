@@ -7,7 +7,7 @@ const HOUSES = [
 ];
 
 const AMOUNTS = [5, 10, 25, 50, 100];
-const PIN = "1234";
+const PIN = "1002";
 const INITIAL_POINTS = { altus: 1000, stedman: 1000, kessler: 1000 };
 
 const styles = `
