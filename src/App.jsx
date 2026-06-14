@@ -8,7 +8,7 @@ const HOUSES = [
 
 const AMOUNTS = [5, 10, 25, 50, 100];
 const PIN = "1002";
-const INITIAL_POINTS = { altus: 1000, stedman: 1000, kessler: 1000 };
+const INITIAL_POINTS = { altus: 0, stedman: 0, kessler: 0 };
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
