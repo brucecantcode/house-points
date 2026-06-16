@@ -81,19 +81,19 @@ const styles = `
   .hp-house-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
   .hp-house-card {
     border-radius: 16px; border: 1px solid rgba(255,255,255,0.07);
-    background: #0D0D14; overflow: hidden; transition: transform 0.2s;
-    position: relative;
+    background: #0D0D14; transition: transform 0.2s;
+    position: relative; overflow: visible;
   }
   .hp-house-card:hover { transform: translateY(-3px); }
-  .hp-house-accent { height: 6px; width: 100%; }
-  .hp-house-inner { padding: 2.2rem 2rem; display: flex; align-items: center; gap: 1.6rem; }
-  .hp-house-mascot { font-size: 5rem; line-height: 1; flex-shrink: 0; }
-  .hp-house-info { flex: 1; min-width: 0; }
-  .hp-house-name { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 0.08em; line-height: 1; }
-  .hp-house-sub { font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 6px; opacity: 0.4; }
+  .hp-house-accent { height: 6px; width: 100%; border-radius: 16px 16px 0 0; }
+  .hp-house-inner { padding: 1.6rem 1.8rem; display: flex; align-items: center; gap: 1.2rem; }
+  .hp-house-mascot { font-size: 3.5rem; line-height: 1; flex-shrink: 0; }
+  .hp-house-info { flex: 1; min-width: 0; overflow: hidden; }
+  .hp-house-name { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.08em; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hp-house-sub { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 4px; opacity: 0.4; }
   .hp-house-pts-wrap { text-align: right; flex-shrink: 0; }
-  .hp-house-pts { font-family: 'Bebas Neue', sans-serif; font-size: 5rem; line-height: 1; }
-  .hp-house-pts-label { font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; margin-top: 4px; }
+  .hp-house-pts { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; line-height: 1; }
+  .hp-house-pts-label { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; margin-top: 4px; }
   .hp-rank-badge {
     position: absolute; top: 16px; left: 20px;
     font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem;
