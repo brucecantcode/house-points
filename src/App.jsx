@@ -1,5 +1,40 @@
 import { useState, useEffect, useCallback } from "react";
 
+const SUPABASE_URL = "https://qyqgbuzjmwojcsnasgkz.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5cWdidXpqbXdvamNzbmFzZ2t6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1NzI2NzMsImV4cCI6MjA5NzE0ODY3M30.ijN68YnwdRQWyl753a4hQvaLCd8JiIG9rWgAYxkxCbg";
+
+const db = {
+  async getPoints() {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/house_points?select=id,points`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    const rows = await res.json();
+    const pts = {};
+    rows.forEach(r => { pts[r.id] = r.points; });
+    return pts;
+  },
+  async setPoints(houseId, newPoints) {
+    await fetch(`${SUPABASE_URL}/rest/v1/house_points?id=eq.${houseId}`, {
+      method: "PATCH",
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ points: newPoints })
+    });
+  },
+  async getLog() {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/activity_log?select=*&order=created_at.desc&limit=50`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    return await res.json();
+  },
+  async addLog(entry) {
+    await fetch(`${SUPABASE_URL}/rest/v1/activity_log`, {
+      method: "POST",
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify(entry)
+    });
+  }
+};
+
 const HOUSES = [
   { id: "altus",   name: "Altus",   mascot: "🦘", color: "#D92B2B", colorDim: "rgba(217,43,43,0.15)", colorBorder: "rgba(217,43,43,0.35)" },
   { id: "stedman", name: "Stedman", mascot: "🦅", color: "#F5C518", colorDim: "rgba(245,197,24,0.12)", colorBorder: "rgba(245,197,24,0.3)" },
@@ -7,8 +42,8 @@ const HOUSES = [
 ];
 
 const AMOUNTS = [5, 10, 25, 50, 100];
-const PIN = "1002";
-const INITIAL_POINTS = { altus: 0, stedman: 0, kessler: 0 };
+const PIN = "1234";
+const INITIAL_POINTS = { altus: 1000, stedman: 1000, kessler: 1000 };
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -208,25 +243,31 @@ export default function HousePoints() {
   useEffect(() => {
     async function load() {
       try {
-        const [ptsRes, logRes] = await Promise.all([
-          window.storage.get("hp_points"),
-          window.storage.get("hp_log"),
-        ]);
-        setPoints(ptsRes ? JSON.parse(ptsRes.value) : { ...INITIAL_POINTS });
-        setLog(logRes ? JSON.parse(logRes.value) : []);
-      } catch {
+        const [pts, logEntries] = await Promise.all([db.getPoints(), db.getLog()]);
+        setPoints(Object.keys(pts).length ? pts : { ...INITIAL_POINTS });
+        setLog(logEntries.map(e => ({
+          id: e.id, houseId: e.house_id, houseName: e.house_name,
+          color: e.color, delta: e.delta, reason: e.reason,
+          time: new Date(e.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        })).reverse());
+      } catch (e) {
+        console.error(e);
         setPoints({ ...INITIAL_POINTS });
         setLog([]);
       }
       setLoading(false);
     }
     load();
+    const interval = setInterval(load, 10000);
+    return () => clearInterval(interval);
   }, []);
 
-  const save = useCallback(async (newPoints, newLog) => {
+  const save = useCallback(async (houseId, newPts, logEntry) => {
     try {
-      await window.storage.set("hp_points", JSON.stringify(newPoints));
-      await window.storage.set("hp_log", JSON.stringify(newLog));
+      await Promise.all([
+        db.setPoints(houseId, newPts),
+        db.addLog(logEntry)
+      ]);
     } catch (e) { console.error(e); }
   }, []);
 
@@ -240,14 +281,15 @@ export default function HousePoints() {
     const amt = customAmt[houseId] !== "" ? parseInt(customAmt[houseId]) || 0 : selectedAmt[houseId];
     if (!amt || amt <= 0) return;
     const delta = sign * amt;
-    const newPoints = { ...points, [houseId]: Math.max(0, (points[houseId] ?? 0) + delta) };
-    const now = new Date();
-    const time = now.getHours().toString().padStart(2, "0") + ":" + now.getMinutes().toString().padStart(2, "0");
-    const entry = { id: Date.now(), houseId, houseName: h.name, color: h.color, delta, reason: reasons[houseId] || "No reason given", time };
-    const newLog = [...log, entry].slice(-60);
+    const newPts = Math.max(0, (points[houseId] ?? 0) + delta);
+    const newPoints = { ...points, [houseId]: newPts };
+    const reason = reasons[houseId] || "No reason given";
+    const logEntry = { house_id: houseId, house_name: h.name, color: h.color, delta, reason };
+    const localEntry = { id: Date.now(), houseId, houseName: h.name, color: h.color, delta, reason,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) };
     setPoints(newPoints);
-    setLog(newLog);
-    save(newPoints, newLog);
+    setLog(l => [localEntry, ...l].slice(0, 60));
+    save(houseId, newPts, logEntry);
     setBumping(b => ({ ...b, [houseId]: true }));
     setTimeout(() => setBumping(b => ({ ...b, [houseId]: false })), 250);
     showToast(`${sign > 0 ? "+" : ""}${delta} pts — ${h.name}`);
