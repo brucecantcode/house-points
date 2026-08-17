@@ -42,6 +42,10 @@ const HOUSES = [
 ];
 
 const AMOUNTS = [5, 10, 25, 50, 100];
+const PRESETS = [
+  { label: "Hats & Diaries", reason: "All students in home class have hats and diaries", amount: 25 },
+  { label: "Positive Values", reason: "Representing positive college values", amount: 15 },
+];
 const PIN = "1946";
 const INITIAL_POINTS = { altus: 1000, stedman: 1000, kessler: 1000 };
 
@@ -184,6 +188,9 @@ const styles = `
   }
   .hp-amt-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
   .hp-amt-btn.sel { color: #0A0A0F; font-weight: 700; border-color: transparent; }
+  .hp-preset-row { display: flex; gap: 6px; margin-bottom: 0.8rem; flex-wrap: wrap; }
+  .hp-preset-btn { padding: 0.4rem 0.8rem; background: rgba(245,197,24,0.08); border: 1px solid rgba(245,197,24,0.25); border-radius: 6px; color: #F5C518; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .hp-preset-btn:hover { background: rgba(245,197,24,0.18); }
   .hp-custom-input {
     width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
     border-radius: 7px; padding: 0.55rem 0.9rem; color: #fff; font-size: 0.9rem;
@@ -296,7 +303,10 @@ export default function HousePoints() {
     setReasons(r => ({ ...r, [houseId]: "" }));
     setCustomAmt(c => ({ ...c, [houseId]: "" }));
   };
-
+  const applyPreset = (houseId, preset) => {
+    setReasons(r => ({ ...r, [houseId]: preset.reason }));
+    setCustomAmt(c => ({ ...c, [houseId]: String(preset.amount) }));
+  };
   const checkPin = () => {
     if (pinVal.join("") === PIN) {
       setPinUnlocked(true); setPinError(""); setPinVal(["", "", "", ""]);
@@ -446,6 +456,14 @@ export default function HousePoints() {
                     <span className="hp-ctrl-pts" style={{ color: h.color }}>{points[h.id]}</span>
                   </div>
                   <div className="hp-ctrl-body">
+                    <div className="hp-preset-row">
+                      {PRESETS.map(p => (
+                        <button key={p.label} className="hp-preset-btn"
+                          onClick={() => applyPreset(h.id, p)}>
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
                     <input className="hp-reason" placeholder="Reason (e.g. won the quiz)"
                       value={reasons[h.id]}
                       onChange={e => setReasons(r => ({ ...r, [h.id]: e.target.value }))} />
