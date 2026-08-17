@@ -45,12 +45,15 @@ const AMOUNTS = [5, 10, 25, 50, 100];
 const PRESETS = [
   { label: "Hats & Diaries", reason: "All students in home class have hats and diaries", amount: 25 },
   { label: "Positive Values", reason: "Representing positive college values", amount: 15 },
-  { label: "Carnival 1st", reason: "Main carnival - 1st place", amount: 300 },
-  { label: "Carnival 2nd", reason: "Main carnival - 2nd place", amount: 200 },
-  { label: "Carnival 3rd", reason: "Main carnival - 3rd place", amount: 100 },
-  { label: "Age Champ 1st", reason: "Carnival age champion - 1st place", amount: 30 },
-  { label: "Age Champ 2nd", reason: "Carnival age champion - 2nd place", amount: 20 },
-  { label: "Age Champ 3rd", reason: "Carnival age champion - 3rd place", amount: 10 },
+];
+const CARNIVALS = ["Swimming Carnival", "Athletics Carnival", "Cross Country"];
+const RANK_PRESETS = [
+  { label: "1st", reason: "1st place", amount: 300 },
+  { label: "2nd", reason: "2nd place", amount: 200 },
+  { label: "3rd", reason: "3rd place", amount: 100 },
+  { label: "Age Champ 1st", reason: "age champion - 1st place", amount: 30 },
+  { label: "Age Champ 2nd", reason: "age champion - 2nd place", amount: 20 },
+  { label: "Age Champ 3rd", reason: "age champion - 3rd place", amount: 10 },
 ];
 const PIN = "1946";
 const INITIAL_POINTS = { altus: 1000, stedman: 1000, kessler: 1000 };
@@ -197,6 +200,11 @@ const styles = `
   .hp-preset-row { display: flex; gap: 6px; margin-bottom: 0.8rem; flex-wrap: wrap; }
   .hp-preset-btn { padding: 0.4rem 0.8rem; background: rgba(245,197,24,0.08); border: 1px solid rgba(245,197,24,0.25); border-radius: 6px; color: #F5C518; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
   .hp-preset-btn:hover { background: rgba(245,197,24,0.18); }
+   .hp-carnival-select {
+    width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 7px; padding: 0.5rem 0.7rem; color: #fff; font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif; margin-bottom: 0.8rem; outline: none; cursor: pointer;
+  }
   .hp-custom-input {
     width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
     border-radius: 7px; padding: 0.55rem 0.9rem; color: #fff; font-size: 0.9rem;
@@ -249,6 +257,7 @@ export default function HousePoints() {
   const [selectedAmt, setSelectedAmt] = useState({ altus: 10, stedman: 10, kessler: 10 });
   const [customAmt, setCustomAmt] = useState({ altus: "", stedman: "", kessler: "" });
   const [reasons, setReasons] = useState({ altus: "", stedman: "", kessler: "" });
+  const [selectedCarnival, setSelectedCarnival] = useState({ altus: CARNIVALS[0], stedman: CARNIVALS[0], kessler: CARNIVALS[0] });
   const [toast, setToast] = useState({ msg: "", show: false });
   const [bumping, setBumping] = useState({});
   const [loading, setLoading] = useState(true);
@@ -311,6 +320,11 @@ export default function HousePoints() {
   };
   const applyPreset = (houseId, preset) => {
     setReasons(r => ({ ...r, [houseId]: preset.reason }));
+    setCustomAmt(c => ({ ...c, [houseId]: String(preset.amount) }));
+  };
+   const applyRankPreset = (houseId, preset) => {
+    const carnival = selectedCarnival[houseId];
+    setReasons(r => ({ ...r, [houseId]: `${carnival} - ${preset.reason}` }));
     setCustomAmt(c => ({ ...c, [houseId]: String(preset.amount) }));
   };
   const checkPin = () => {
@@ -466,6 +480,19 @@ export default function HousePoints() {
                       {PRESETS.map(p => (
                         <button key={p.label} className="hp-preset-btn"
                           onClick={() => applyPreset(h.id, p)}>
+                          {p.label}
+                        </button>
+                      ))}
+                    </div>
+                     <select className="hp-carnival-select"
+                      value={selectedCarnival[h.id]}
+                      onChange={e => setSelectedCarnival(s => ({ ...s, [h.id]: e.target.value }))}>
+                      {CARNIVALS.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <div className="hp-preset-row">
+                      {RANK_PRESETS.map(p => (
+                        <button key={p.label} className="hp-preset-btn"
+                          onClick={() => applyRankPreset(h.id, p)}>
                           {p.label}
                         </button>
                       ))}
