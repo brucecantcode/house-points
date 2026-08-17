@@ -205,6 +205,9 @@ const styles = `
     border-radius: 7px; padding: 0.5rem 0.7rem; color: #fff; font-size: 0.85rem;
     font-family: 'DM Sans', sans-serif; margin-bottom: 0.8rem; outline: none; cursor: pointer;
   }
+   .hp-carnival-select option {
+    background: #0D0D14; color: #fff;
+  }
   .hp-custom-input {
     width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
     border-radius: 7px; padding: 0.55rem 0.9rem; color: #fff; font-size: 0.9rem;
