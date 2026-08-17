@@ -45,6 +45,12 @@ const AMOUNTS = [5, 10, 25, 50, 100];
 const PRESETS = [
   { label: "Hats & Diaries", reason: "All students in home class have hats and diaries", amount: 25 },
   { label: "Positive Values", reason: "Representing positive college values", amount: 15 },
+  { label: "Carnival 1st", reason: "Main carnival - 1st place", amount: 300 },
+  { label: "Carnival 2nd", reason: "Main carnival - 2nd place", amount: 200 },
+  { label: "Carnival 3rd", reason: "Main carnival - 3rd place", amount: 100 },
+  { label: "Age Champ 1st", reason: "Carnival age champion - 1st place", amount: 30 },
+  { label: "Age Champ 2nd", reason: "Carnival age champion - 2nd place", amount: 20 },
+  { label: "Age Champ 3rd", reason: "Carnival age champion - 3rd place", amount: 10 },
 ];
 const PIN = "1946";
 const INITIAL_POINTS = { altus: 1000, stedman: 1000, kessler: 1000 };
